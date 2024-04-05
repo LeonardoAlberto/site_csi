@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI Governamental</title>
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/alert.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Kufi+Arabic:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&family=Noto+Sans+Hebrew:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+
+    <div class="toast active">
+        {% for category, message in messages %}
+        <div class="toast-content">
+            <img class="fas fa-solid fa-check check" src="../static/img/{{ category }}.png">
+
+
+            <div class="message">
+                <span class="text text-1">{{ category }}</span>
+                <span class="text text-2">{{ message }}</span>
+            </div>
+
+        </div>
+
+        <i class="fa-solid fa-xmark close"></i>
+        <div class="progress active {{ category }}"></div>
+        {% endfor %}
+
+    </div>
+    <script>
+        setTimeout(function () {
+            document.querySelector('.toast').style.display = 'none';
+        }, 5600);
+    </script>
+    {% endif %}
+    {% endwith %}
+
+
+
+    <header style="text-align: center;">
+        <div class="footer_top">
+            <div style="display: flex; align-items: center; ">
+                <p style="padding-left: 20px;">CSI Governamental</p>
+            </div>
+        </div>
+
+
+        <div class="login">
+            <form action="/login" method="post">
+                <strong>ACESSO RESTRITO</strong><br><br>
+                <input type="text" placeholder="Usuario" name="usuario">
+                <input type="password" placeholder="Senha" name="senha">
+                <input type="submit" value="Entrar">
+            </form>
+        </div>
+
+
+    </header>
+
+
+</body>
+<script src="{{ url_for('static',     filename='js/script.js') }}"></script>
+
+</html>

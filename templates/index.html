@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI Governamental</title>
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/alert.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Kufi+Arabic:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&family=Noto+Sans+Hebrew:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+
+    <div class="toast active">
+        {% for category, message in messages %}
+        <div class="toast-content">
+            <img class="fas fa-solid fa-check check" src="../static/img/{{ category }}.png">
+
+
+            <div class="message">
+                <span class="text text-1">{{ category }}</span>
+                <span class="text text-2">{{ message }}</span>
+            </div>
+
+        </div>
+
+        <i class="fa-solid fa-xmark close"></i>
+        <div class="progress active {{ category }}"></div>
+        {% endfor %}
+
+    </div>
+    <script>
+        setTimeout(function () {
+            document.querySelector('.toast').style.display = 'none';
+        }, 5600);
+    </script>
+    {% endif %}
+    {% endwith %}
+
+
+
+    <div id="central_esquerda">
+        <div id="central_esquerda_conteudo">
+            <a href="/">
+                <p class="central_esquerda_conteudo_p">Gerenciador de Tarefas</p>
+            </a>
+            <a href="/dashboard_tarefas">
+                <p class="central_esquerda_conteudo_p">Dashboard de Tarefas</p>
+            </a>
+            <a href="/criar_tarefa">
+                <p class="central_esquerda_conteudo_p">Criador de Tarefas</p>
+            </a>
+            <a href="/tarefas_arquivadas">
+                <p class="central_esquerda_conteudo_p">Tarefas Arquivadas</p>
+            </a>
+            <a href="/usuarios">
+                <p class="central_esquerda_conteudo_p">Vizualizar Usuarios</p>
+            </a>
+            <a href="/criar_usuario">
+                <p class="central_esquerda_conteudo_p">Criar Usuario</p>
+            </a>
+            <a href="/configuracao">
+                <p class="central_esquerda_conteudo_p">Configuracoes</p>
+            </a>
+            <a href="/logout">
+                <p class="central_esquerda_conteudo_p">Deslogar</p>
+            </a>
+        </div>
+    </div>
+
+
+    <header>
+        <div class="footer_top">
+            <div style="display: flex; align-items: center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2319/2319181.png" id="toggleButton"
+                    onclick="toggleWidth()">
+                <p>CSI Governamental</p>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <p style="margin-right: 10px;">{{nome_user}}</p>
+                <img src="{{dados_user[0][6]}}" style="border-radius: 50%; width: 32px; height: 32px;">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="content_01">
+                <h3><strong>DashBoard de Tarefas</strong></h3>
+                <p>{{len_dados}} Tarefa(s) pendente</p>
+            </div><br>
+
+            <div class="tarefas">
+                <table>
+                    <tr>
+                        <th>Tarefa</th>
+                        <th>Setor Responsável</th>
+                        <th>Descrição</th>
+                        <th>Prioridade</th>
+                        <th>Status</th>
+                        <th>Data de Lançamento</th>
+                        <th>Data de Finalização</th>
+                        <th>Funções</th>
+                        <th>Chat</th>
+                    </tr>
+
+
+                    {% for i in range(len_dados) %}
+                    <tr>
+                        <td>{{dados[i][2]}}</td>
+                        <td style="text-transform: capitalize;">{{dados[i][3]}}</td>
+                        <td>{{dados[i][4]}}</td>
+
+
+                        {% if dados[i][5] == 'alta_prioridade' %}
+                        <td style="background-color: rgba(255, 0, 0, 0.5);">Alta Prioridade</td>
+                        {% elif dados[i][5] == 'media_prioridade' %}
+                        <td style="background-color: rgba(255, 165, 0, 0.5);">Media Prioridade</td>
+                        {% elif dados[i][5] == 'baixa_prioridade' %}
+                        <td style="background-color: rgba(255, 255, 0, 0.5);">Baixa Prioridade</td>
+                        {% elif dados[i][5] == 'prioridade_critica' %}
+                        <td style="background-color: rgba(215, 6, 6, 0.5);">Critica Prioridade</td>
+                        {% elif dados[i][5] == 'prioridade_normal' %}
+                        <td style="background-color: rgba(0, 128, 0, 0.5);">Normal Prioridade</td>
+                        {% endif %}
+
+
+                        {% if dados[i][6] == 'nao_iniciada' %}
+                        <td style="background-color: rgba(255, 215, 0, 0.5);">Nao Iniciada</td>
+                        {% elif dados[i][6] == 'em_andamento' %}
+                        <td style="background-color: rgba(0, 255, 0, 0.5);">Em Andamento</td>
+                        {% elif dados[i][6] == 'pausada' %}
+                        <td style="background-color: rgba(128, 128, 128, 0.5);">Pausada</td>
+                        {% elif dados[i][6] == 'pronta_para_revisao' %}
+                        <td style="background-color: rgba(0, 0, 255, 0.5);">Pronto para Revisao</td>
+                        {% elif dados[i][6] == 'concluida' %}
+                        <td style="background-color: rgba(128, 0, 128, 0.5);">Concluida</td>
+                        {% endif %}
+
+
+
+                        <td>{{dados[i][7]}}</td>
+
+                        {% if dados[i][8] == none %}
+                        <td>Aguardando</td>
+                        {% else %}
+                        <td>{{dados[i][8]}}</td>
+                        {% endif %}
+
+                        <td>
+                            {% if dados[i][6] == 'nao_iniciada' %}
+
+                            <a href="alterar_status/{{dados[i][0]}}/em_andamento"><button class="btn_table"
+                                    onclick="enviarMensagem01()">Iniciar</button></a>
+                            {% elif dados[i][6] == 'em_andamento' %}
+                            <a href="alterar_status/{{dados[i][0]}}/pausada"><button
+                                    class="btn_table">Pausar</button></a><br><br>
+                            <a href="alterar_status/{{dados[i][0]}}/pronta_para_revisao"><button
+                                    class="btn_table">Pronto</button></a>
+                            {% elif dados[i][6] == 'pausada' %}
+                            <a href="alterar_status/{{dados[i][0]}}/em_andamento"><button
+                                    class="btn_table">Iniciar</button></a>
+
+                            {% elif dados[i][6] == 'pronta_para_revisao' %}
+                            <a href="alterar_status/{{dados[i][0]}}/concluida"><button
+                                    class="btn_table">Concluir</button></a>
+
+                            {% elif dados[i][6] == 'concluida' %}
+                            <a href="alterar_status/{{dados[i][0]}}/arquivada"><button
+                                    class="btn_table">Arquivar</button></a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button data-id="{{ dados[i][0] }}" class="btn_table"
+                                onclick="fechar_chat(this)">Chat</button>
+
+                        </td>
+                    </tr>
+
+                    <div id="chat_background" style="display: none;" data-id="{{ dados[i][0] }}">
+                        <img class="img_fechar" src="{{ url_for('static',     filename='img/x.png') }}"
+                            onclick="fechar_chat()">
+                        <div class="chat_grande">
+                            <input type="text" id="mensagemInput" placeholder="Digite sua mensagem..."
+                                data-id="{{ dados[i][0] }}" minlength="1">
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </table>
+            </div>
+
+
+
+        </div>
+    </header>
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let chatCodigo;
+            $('.btn_table').click(function () {
+                chatCodigo = $(this).data("id");
+                updateList(chatCodigo);
+            });
+
+            setInterval(function () {
+                if (chatCodigo) {
+                    updateList(chatCodigo);
+                }
+            }, 2000);
+
+            function formatarData(dataString) {
+                var dataObjeto = new Date(dataString);
+                var dia = ("0" + dataObjeto.getDate()).slice(-2);
+                var mes = ("0" + (dataObjeto.getMonth() + 1)).slice(-2);
+                var hora = ("0" + dataObjeto.getHours()).slice(-2);
+                var minutos = ("0" + dataObjeto.getMinutes()).slice(-2);
+                return dia + '/' + mes + ' ' + hora + ':' + minutos;
+            }
+
+            function updateList(codigo) {
+                $.ajax({
+                    url: '/mensagens',
+                    type: 'GET',
+                    data: { codigo: codigo },
+                    success: function (data) {
+                        var $chatGrande = $('#chat_background .chat_grande');
+                        $chatGrande.children().not('#mensagemInput').remove();
+
+                        data.forEach(function (item) {
+                            var dataFormatada = formatarData(item[3]);
+                            $chatGrande.append('<span class="P"><strong>' + item[1] + '</strong><div class="msg_flex"> <p style="margin-right:10px;">' + item[2] + '</p> <span>' + dataFormatada + '</span></div></span>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao atualizar lista de mensagens:', error);
+                    }
+                });
+            }
+
+
+            function enviarMensagem() {
+                var mensagem = $('#mensagemInput').val();
+                var codigo = chatCodigo
+                $.ajax({
+                    url: '/enviar_mensagem',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ mensagem: mensagem, codigo: codigo }),
+                    success: function (response) {
+                        console.log('Mensagem enviada com sucesso:', response);
+                        $('#mensagemInput').val('');
+                        updateList(codigo);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao enviar mensagem:', error);
+                    }
+                });
+            }
+
+            $('#mensagemInput').keypress(function (e) {
+                if (e.which == 13) {
+                    enviarMensagem();
+                }
+            });
+        });
+    </script>
+
+
+
+
+</body>
+<script src="{{ url_for('static',     filename='js/script.js') }}"></script>
+
+</html>

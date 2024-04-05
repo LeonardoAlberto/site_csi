@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSI Governamental</title>
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/alert.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',     filename='css/style.css') }}">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Kufi+Arabic:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&family=Noto+Sans+Hebrew:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+
+    <div class="toast active">
+        {% for category, message in messages %}
+        <div class="toast-content">
+            <img class="fas fa-solid fa-check check" src="../static/img/{{ category }}.png">
+
+
+            <div class="message">
+                <span class="text text-1">{{ category }}</span>
+                <span class="text text-2">{{ message }}</span>
+            </div>
+
+        </div>
+
+        <i class="fa-solid fa-xmark close"></i>
+        <div class="progress active {{ category }}"></div>
+        {% endfor %}
+
+    </div>
+    <script>
+        setTimeout(function () {
+            document.querySelector('.toast').style.display = 'none';
+        }, 5600);
+    </script>
+    {% endif %}
+    {% endwith %}
+
+
+
+    <div id="central_esquerda">
+        <div id="central_esquerda_conteudo">
+            <a href="/">
+                <p class="central_esquerda_conteudo_p">Gerenciador de Tarefas</p>
+            </a>
+            <a href="/dashboard_tarefas">
+                <p class="central_esquerda_conteudo_p">Dashboard de Tarefas</p>
+            </a>
+            <a href="/criar_tarefa">
+                <p class="central_esquerda_conteudo_p">Criador de Tarefas</p>
+            </a>
+            <a href="/tarefas_arquivadas">
+                <p class="central_esquerda_conteudo_p">Tarefas Arquivadas</p>
+            </a>
+            <a href="/usuarios">
+                <p class="central_esquerda_conteudo_p">Vizualizar Usuarios</p>
+            </a>
+            <a href="/criar_usuario">
+                <p class="central_esquerda_conteudo_p">Criar Usuario</p>
+            </a>
+            <a href="/configuracao">
+                <p class="central_esquerda_conteudo_p">Configuracoes</p>
+            </a>
+            <a href="/logout">
+                <p class="central_esquerda_conteudo_p">Deslogar</p>
+            </a>
+        </div>
+    </div>
+
+
+    <header>
+        <div class="footer_top">
+            <div style="display: flex; align-items: center;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2319/2319181.png" id="toggleButton"
+                    onclick="toggleWidth()">
+                <p>CSI Governamental</p>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <p style="margin-right: 10px;">{{nome_user}}</p>
+                <img src="{{dados_user[0][6]}}" style="border-radius: 50%; width: 32px; height: 32px;">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="content_01">
+                <h3><strong>DashBoard de Tarefas</strong></h3>
+                <p>{{len_dados}} Tarefa(s) pendente</p>
+            </div><br>
+
+            <div class="tarefas">
+                <table>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Setor</th>
+                        <th>Responsavel</th>
+                    </tr>
+
+
+                    {% for i in range(len_usuarios) %}
+                    <tr>
+                        <td style="text-transform: capitalize;">{{dados[i][0]}}</td>
+                        <td style="text-transform: capitalize;">{{dados[i][2]}}</td>
+                        <td style="text-transform: capitalize;">{{dados[i][3]}}</td>
+                        <td style="text-transform: capitalize;">{{dados[i][4]}}</td>
+                        <td style="text-transform: capitalize;">{{dados[i][5]}}</td>
+                    </tr>
+                    {%endfor%}
+                </table>
+            </div>
+
+
+
+        </div>
+    </header>
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let chatCodigo;
+            $('.btn_table').click(function () {
+                chatCodigo = $(this).data("id");
+                updateList(chatCodigo);
+            });
+
+            setInterval(function () {
+                if (chatCodigo) {
+                    updateList(chatCodigo);
+                }
+            }, 2000);
+
+            function formatarData(dataString) {
+                var dataObjeto = new Date(dataString);
+                var dia = ("0" + dataObjeto.getDate()).slice(-2);
+                var mes = ("0" + (dataObjeto.getMonth() + 1)).slice(-2);
+                var hora = ("0" + dataObjeto.getHours()).slice(-2);
+                var minutos = ("0" + dataObjeto.getMinutes()).slice(-2);
+                return dia + '/' + mes + ' ' + hora + ':' + minutos;
+            }
+
+            function updateList(codigo) {
+                $.ajax({
+                    url: '/mensagens',
+                    type: 'GET',
+                    data: { codigo: codigo },
+                    success: function (data) {
+                        var $chatGrande = $('#chat_background .chat_grande');
+                        $chatGrande.children().not('#mensagemInput').remove();
+
+                        data.forEach(function (item) {
+                            var dataFormatada = formatarData(item[3]);
+                            $chatGrande.append('<span class="P"><strong>' + item[1] + '</strong><div class="msg_flex"> <p style="margin-right:10px;">' + item[2] + '</p> <span>' + dataFormatada + '</span></div></span>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao atualizar lista de mensagens:', error);
+                    }
+                });
+            }
+
+
+            function enviarMensagem() {
+                var mensagem = $('#mensagemInput').val();
+                var codigo = chatCodigo
+                $.ajax({
+                    url: '/enviar_mensagem',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ mensagem: mensagem, codigo: codigo }),
+                    success: function (response) {
+                        console.log('Mensagem enviada com sucesso:', response);
+                        $('#mensagemInput').val('');
+                        updateList(codigo);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro ao enviar mensagem:', error);
+                    }
+                });
+            }
+
+            $('#mensagemInput').keypress(function (e) {
+                if (e.which == 13) {
+                    enviarMensagem();
+                }
+            });
+        });
+    </script>
+
+
+
+
+</body>
+<script src="{{ url_for('static',     filename='js/script.js') }}"></script>
+
+</html>
